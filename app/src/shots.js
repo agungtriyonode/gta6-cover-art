@@ -1,7 +1,23 @@
-// Fixed scenes for screenshots: ?shot=editor shows the page with a sample photo; ?shot=cover shows the cover alone.
-// `photo` picks the sample (samples/<photo>.jpg) and `caption` the words. window.__shotReady is set once painted.
-export async function runShot(shot, query, load) {
-  if (shot === 'cover') document.body.classList.add('shot-cover');
-  await load(`samples/${query.get('photo') ?? 'pier'}.jpg`, query.get('caption') ?? 'Sunset Heist');
-  requestAnimationFrame(() => requestAnimationFrame(() => { window.__shotReady = true; }));
+// Fixed scenes for screenshots: ?shot=editor shows the editor with demo
+// photos loaded; ?shot=cover shows the finished cover alone, full-bleed.
+// `layout`, `caption` and `tagline` come from the query. window.__shotReady
+// is set once the scene is painted, so a screenshot tool knows when to shoot.
+
+export function readShotScene() {
+  const query = new URLSearchParams(location.search);
+  const shot = query.get('shot');
+  if (!shot) return null;
+  return {
+    kind: shot,
+    layout: query.get('layout') ?? 'mosaic',
+    caption: query.get('caption') ?? 'VICE CITY',
+    tagline: query.get('tagline') ?? 'SUNSET HEIST',
+    size: query.get('size') ?? 'wide',
+  };
+}
+
+export function markShotReady() {
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    window.__shotReady = true;
+  }));
 }

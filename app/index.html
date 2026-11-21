@@ -3,20 +3,113 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cover Snap</title>
+<title>Neon Vice Cover Studio — GTA-style cover art maker</title>
 <link rel="stylesheet" href="./style.css">
 </head>
 <body>
 <main class="app">
-  <section class="controls">
-    <h1>Cover Snap</h1>
-    <p>A photo and a caption, made into a square cover.</p>
-    <label>Photo <input id="photo" type="file" accept="image/*"></label>
-    <label>Caption <input id="caption" type="text" maxlength="40" value="Sunset Heist"></label>
-    <button id="export" type="button">Export PNG 1080 x 1080</button>
-    <p id="status" role="status"></p>
+  <section class="controls" aria-label="Cover controls">
+    <header>
+      <h1>Neon Vice<br>Cover Studio</h1>
+      <p>Your photo and a caption, made into GTA-style cover art. Works fully offline — photos never leave your machine.</p>
+    </header>
+
+    <section class="group">
+      <h2>1 · Photos</h2>
+      <p class="hint">Three slots. Load your own, or keep the demo pictures.</p>
+      <div class="slot">
+        <label>Photo 1 <span data-slot-label="0"></span>
+          <input data-slot-file="0" type="file" accept="image/*">
+        </label>
+        <button type="button" data-slot-demo="0">Use demo</button>
+      </div>
+      <div class="slot">
+        <label>Photo 2 <span data-slot-label="1"></span>
+          <input data-slot-file="1" type="file" accept="image/*">
+        </label>
+        <button type="button" data-slot-demo="1">Use demo</button>
+      </div>
+      <div class="slot">
+        <label>Photo 3 <span data-slot-label="2"></span>
+          <input data-slot-file="2" type="file" accept="image/*">
+        </label>
+        <button type="button" data-slot-demo="2">Use demo</button>
+      </div>
+      <button id="loadDemos" type="button">Load all demo photos</button>
+    </section>
+
+    <section class="group">
+      <h2>2 · Layout</h2>
+      <div class="radios">
+        <label><input type="radio" name="layout" value="mosaic" checked> Mosaic · 6 panels</label>
+        <label><input type="radio" name="layout" value="strip"> Strip · 5 panels</label>
+        <label><input type="radio" name="layout" value="duo"> Duo · 4 panels</label>
+      </div>
+    </section>
+
+    <section class="group">
+      <h2>3 · Selected panel</h2>
+      <p class="hint">Click a panel in the preview, or pick one here.</p>
+      <label>Panel
+        <select id="panelSelect"></select>
+      </label>
+      <label>Photo in this panel
+        <select id="panelPhoto">
+          <option value="0">Photo 1</option>
+          <option value="1">Photo 2</option>
+          <option value="2">Photo 3</option>
+        </select>
+      </label>
+      <label>Colour grade
+        <select id="panelGrade">
+          <option value="sunset">Sunset</option>
+          <option value="neon">Neon</option>
+          <option value="noir">Noir</option>
+          <option value="clean">Clean</option>
+        </select>
+      </label>
+      <label>Zoom <span id="zoomValue">112%</span>
+        <input id="panelZoom" type="range" min="1" max="2" step="0.01" value="1.12">
+      </label>
+      <label>Position left–right
+        <input id="panelFocusX" type="range" min="0" max="1" step="0.01" value="0.5">
+      </label>
+      <label>Position top–bottom
+        <input id="panelFocusY" type="range" min="0" max="1" step="0.01" value="0.5">
+      </label>
+    </section>
+
+    <section class="group">
+      <h2>4 · Words</h2>
+      <label>Caption
+        <input id="caption" type="text" maxlength="24" value="VICE CITY">
+      </label>
+      <label>Tagline
+        <input id="tagline" type="text" maxlength="40" value="SUNSET HEIST">
+      </label>
+    </section>
+
+    <section class="group">
+      <h2>5 · Export</h2>
+      <div class="sizes">
+        <button type="button" data-export-size="square">Square · 1080 × 1080</button>
+        <button type="button" data-export-size="portrait">Portrait · 1080 × 1350</button>
+        <button type="button" data-export-size="wide" class="active">Wide · 1920 × 1080</button>
+      </div>
+      <div class="actions">
+        <button id="randomise" type="button">Randomise</button>
+        <button id="undo" type="button">Undo</button>
+        <button id="redo" type="button">Redo</button>
+      </div>
+      <button id="export" type="button" class="primary">Export PNG</button>
+      <p id="status" role="status"></p>
+    </section>
   </section>
-  <canvas id="cover" width="1080" height="1080" aria-label="The cover"></canvas>
+
+  <section class="preview" aria-label="Cover preview">
+    <canvas id="preview" width="720" height="405" aria-label="The cover preview"></canvas>
+    <p class="hint">Click a panel in the preview to edit it. The preview is the cover — what you see is what the PNG holds.</p>
+  </section>
 </main>
 <script type="module" src="./src/main.js"></script>
 </body>

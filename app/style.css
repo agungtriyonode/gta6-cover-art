@@ -1,12 +1,243 @@
-html, body { margin: 0; height: 100%; background: #f2f0f4; color: #1d1b22; font: 15px/1.4 system-ui, sans-serif; }
-.app { display: flex; gap: 32px; align-items: center; justify-content: center; height: 100%; padding: 24px; box-sizing: border-box; }
-.controls { display: flex; flex-direction: column; gap: 14px; width: 280px; }
-.controls h1 { margin: 0; font-size: 28px; }
-.controls p { margin: 0; color: #5c5866; }
-label { display: flex; flex-direction: column; gap: 6px; font-weight: 600; }
-input[type=text] { font: inherit; padding: 8px; border: 1px solid #c9c4d1; border-radius: 6px; }
-button { font: inherit; font-weight: 700; padding: 10px; border: 0; border-radius: 6px; background: #1d1b22; color: #fff; cursor: pointer; }
-canvas { width: min(70vh, 60vw); height: min(70vh, 60vw); box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2); }
-body.shot-cover .controls { display: none; }
-body.shot-cover .app { padding: 0; }
-body.shot-cover canvas { width: 100vw; height: 100vh; box-shadow: none; }
+/* Neon Vice Cover Studio: a dark neon editor. Two columns on desktop — the
+   controls on the left, the live cover on the right — stacked on narrow
+   screens. Nothing here loads from the network. */
+
+html, body {
+  margin: 0;
+  min-height: 100%;
+  background: #0d0714;
+  color: #f2eef8;
+  font: 15px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+.app {
+  display: flex;
+  gap: 28px;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  width: 320px;
+  flex: none;
+}
+
+.controls header h1 {
+  margin: 0;
+  font-size: 30px;
+  line-height: 1.05;
+  letter-spacing: 0.01em;
+  background: linear-gradient(100deg, #ffd98a 0%, #ff7e5f 45%, #ff2e88 80%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.controls header p {
+  margin: 8px 0 0;
+  color: #b9aec9;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid #2c2140;
+  border-radius: 12px;
+  background: #160e24;
+}
+
+.group h2 {
+  margin: 0;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #ff8ad8;
+}
+
+.hint {
+  margin: 0;
+  font-size: 13px;
+  color: #9d92b3;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+label span {
+  font-weight: 400;
+  color: #9d92b3;
+  font-size: 13px;
+}
+
+input[type="text"], select {
+  font: inherit;
+  padding: 8px 10px;
+  border: 1px solid #463a5e;
+  border-radius: 8px;
+  background: #0d0714;
+  color: #f2eef8;
+}
+
+input[type="file"] {
+  font: inherit;
+  font-size: 13px;
+  color: #cfc6de;
+}
+
+input[type="range"] {
+  width: 100%;
+  accent-color: #ff2e88;
+}
+
+.radios {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.radios label {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  font-weight: 400;
+}
+
+.slot {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+}
+
+.slot label {
+  flex: 1;
+  min-width: 0;
+}
+
+button {
+  font: inherit;
+  font-weight: 700;
+  padding: 9px 12px;
+  border: 1px solid #463a5e;
+  border-radius: 8px;
+  background: #221738;
+  color: #f2eef8;
+  cursor: pointer;
+}
+
+button:hover:not(:disabled) {
+  border-color: #ff2e88;
+}
+
+button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+button.active {
+  background: #ff2e88;
+  border-color: #ff2e88;
+}
+
+button.primary {
+  background: linear-gradient(100deg, #ff7e5f, #ff2e88);
+  border: 0;
+  padding: 12px;
+  font-size: 16px;
+}
+
+.sizes, .actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.sizes button, .actions button {
+  flex: 1;
+  white-space: nowrap;
+}
+
+#status {
+  margin: 0;
+  min-height: 1.4em;
+  font-size: 13px;
+  color: #9d92b3;
+}
+
+.preview {
+  flex: 1;
+  min-width: 0;
+  max-width: 900px;
+  position: sticky;
+  top: 24px;
+}
+
+.preview canvas {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 6px;
+  box-shadow: 0 12px 44px rgba(0, 0, 0, 0.55);
+  cursor: crosshair;
+}
+
+.preview .hint {
+  margin-top: 12px;
+  text-align: center;
+}
+
+/* Screenshot mode: the cover alone, full-bleed, no chrome at all. */
+body.shot-cover {
+  background: #0d0714;
+}
+
+body.shot-cover .controls,
+body.shot-cover .preview .hint {
+  display: none;
+}
+
+body.shot-cover .app {
+  padding: 0;
+  display: block;
+}
+
+body.shot-cover .preview {
+  max-width: none;
+  position: static;
+}
+
+body.shot-cover canvas.cover-shot {
+  width: 100vw;
+  height: 100vh;
+  border-radius: 0;
+  box-shadow: none;
+  cursor: default;
+}
+
+@media (max-width: 860px) {
+  .app {
+    flex-direction: column;
+    padding: 16px;
+  }
+
+  .controls {
+    width: 100%;
+  }
+
+  .preview {
+    position: static;
+    max-width: none;
+    width: 100%;
+  }
+}
